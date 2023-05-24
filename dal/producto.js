@@ -7,18 +7,25 @@ const nombreTabla = 'producto';
 
 const listarProducto = (request, response)=>{
     var obj = valida.validaToken(request)
-    //if (obj.estado){}
-    let cadena = `SELECT n_idproducto, c_codigo, c_descripcion, n_borrado FROM ${nombreTabla}
-    `;
-    pool.query(cadena, 
-    (error, results)=>{
-        if (error) {
-            console.log(error);
-            response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
-        } else {
-            response.status(200).json({ estado: true, mensaje: "", data: results.rows  })
-        }
-    });
+    if (obj.estado){
+
+        let cadena = `SELECT n_idproducto, c_codigo, c_descripcion, n_borrado FROM ${nombreTabla}
+                      WHERE n_borrado = 0
+        `;
+        pool.query(cadena, 
+        (error, results)=>{
+            if (error) {
+                console.log(error);
+                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
+            } else {
+                response.status(200).json({ estado: true, mensaje: "", data: results.rows  })
+            }
+        });
+
+    }else{
+        response.status(200).json(obj)
+    }
+    
 
 }
 
@@ -26,20 +33,26 @@ const agregarProducto = (request, response)=>{
     let c_codigo = request.body.c_codigo;
     let c_descripcion = request.body.c_descripcion
     var obj = valida.validaToken(request)
-    //if (obj.estado){}
+    if (obj.estado){
 
-    let cadena = `INSERT INTO ${nombreTabla}(c_codigo, c_descripcion, n_borrado, n_id_usercrea, d_fechacrea)
+        let cadena = `INSERT INTO ${nombreTabla}(c_codigo, c_descripcion, n_borrado, n_id_usercrea, d_fechacrea)
                   VALUES('${c_codigo}', '${c_descripcion}', 0, 1, now())
-    `;
-    pool.query(cadena, 
-    (error, results)=>{
-        if (error) {
-            console.log(error);
-            response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
-        } else {
-            response.status(200).json({ estado: true, mensaje: "", data: null })
-        }
-    });
+        `;
+        pool.query(cadena, 
+        (error, results)=>{
+            if (error) {
+                console.log(error);
+                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
+            } else {
+                response.status(200).json({ estado: true, mensaje: "", data: null })
+            }
+        });
+        
+    } else {
+        response.status(200).json(obj)
+    }
+
+    
 
 }
 
