@@ -25,7 +25,8 @@ app.use('/icons', express.static(__dirname + icon));
 const dbSeguridad = require('./dal/seguridad')
 const producto = require('./dal/producto')//PRODUCTO
 const cliente = require('./dal/cliente')//CLIENTE
-const dbMovil = require('./dal/movil')
+const tienda = require('./dal/tienda')//CLIENTE
+const dbMovil = require('./dal/movil')//MOVIL
 
 
 /****SOCKET****/
@@ -86,6 +87,12 @@ app.post('/api/cliente/listarCliente', cliente.listarCliente)
 app.post('/api/cliente/agregarCliente', cliente.agregarCliente)
 app.post('/api/cliente/actualizarCliente', cliente.actualizarCliente)
 app.post('/api/cliente/eliminarCliente', cliente.eliminarCliente)
+
+/****TIENDA****/
+app.post('/api/tienda/listarTienda', tienda.listarTienda)
+app.post('/api/tienda/agregarTienda', tienda.agregarTienda)
+app.post('/api/tienda/actualizarTienda', tienda.actualizarTienda)
+app.post('/api/tienda/eliminarTienda', tienda.eliminarTienda)
 
 
 
