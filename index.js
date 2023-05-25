@@ -26,6 +26,7 @@ const dbSeguridad = require('./dal/seguridad')
 const producto = require('./dal/producto')//PRODUCTO
 const cliente = require('./dal/cliente')//CLIENTE
 const tienda = require('./dal/tienda')//CLIENTE
+const periodo = require('./dal/periodo')//PERIODO
 const dbMovil = require('./dal/movil')//MOVIL
 
 
@@ -93,6 +94,13 @@ app.post('/api/tienda/listarTienda', tienda.listarTienda)
 app.post('/api/tienda/agregarTienda', tienda.agregarTienda)
 app.post('/api/tienda/actualizarTienda', tienda.actualizarTienda)
 app.post('/api/tienda/eliminarTienda', tienda.eliminarTienda)
+
+/****PERIODO****/
+app.post('/api/periodo/listarPeriodo', periodo.listarPeriodo)
+app.post('/api/periodo/agregarPeriodo', periodo.agregarPeriodo)
+app.post('/api/periodo/actualizarPeriodo', periodo.actualizarPeriodo)
+app.post('/api/periodo/eliminarPeriodo', periodo.eliminarPeriodo)
+app.post('/api/periodo/estadoPeriodo', periodo.estadoPeriodo)
 
 
 
