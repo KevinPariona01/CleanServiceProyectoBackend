@@ -3,13 +3,15 @@ const valida = require('../common/validatoken');
 let pool = cnx.pool;
 
 //NOMBRE DE LA TABLA
-const nombreTabla = 'tienda';
+const nombreTabla = 'gen_tienda';
 
 const listarTienda = (request, response)=>{
     var obj = valida.validaToken(request)
     if (obj.estado){
-        let cadena = `SELECT n_idtienda, n_idcliente, c_codigo, c_direccion, c_nombre_responsable, n_borrado FROM ${nombreTabla}
-                    WHERE n_borrado = 0
+        let cadena = `SELECT gt.n_idgen_tienda, gt.n_idgen_cliente, gt.c_codigo, gt.c_direccion, gt.c_nombre_responsable, gt.n_borrado, gc.c_codigo as cod_cliente 
+                      FROM gen_tienda gt
+                      INNER JOIN gen_cliente gc on gt.n_idgen_cliente = gc.n_idgen_cliente
+                      WHERE gt.n_borrado = 0
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -27,14 +29,14 @@ const listarTienda = (request, response)=>{
 }
 
 const agregarTienda = (request, response)=>{
-    let n_idcliente = request.body.n_idcliente;
+    let n_idgen_cliente = request.body.n_idgen_cliente;
     let c_codigo = request.body.c_codigo;
     let c_direccion = request.body.c_direccion
     let c_nombre_responsable = request.body.c_nombre_responsable
     var obj = valida.validaToken(request)
     if (obj.estado){
-        let cadena = `INSERT INTO ${nombreTabla}(n_idcliente, c_direccion, c_codigo, c_nombre_responsable, n_borrado, n_id_usercrea, d_fechacrea)
-                    VALUES(${n_idcliente}, '${c_codigo}', '${c_direccion}', '${c_nombre_responsable}', 0, 1, now())
+        let cadena = `INSERT INTO ${nombreTabla}(n_idgen_cliente, c_direccion, c_codigo, c_nombre_responsable, n_borrado, n_id_usercrea, d_fechacrea)
+                    VALUES(${n_idgen_cliente}, '${c_codigo}', '${c_direccion}', '${c_nombre_responsable}', 0, 1, now())
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -51,16 +53,16 @@ const agregarTienda = (request, response)=>{
 }
 
 const actualizarTienda = (request, response)=>{
-    let n_idtienda = request.body.n_idtienda;
-    let n_idcliente = request.body.n_idcliente;
+    let n_idgen_tienda = request.body.n_idgen_tienda;
+    let n_idgen_cliente = request.body.n_idgen_cliente;
     let c_codigo = request.body.c_codigo;
     let c_direccion = request.body.c_direccion
     let c_nombre_responsable = request.body.c_nombre_responsable
     var obj = valida.validaToken(request)
     if (obj.estado){
         let cadena = `UPDATE ${nombreTabla} 
-                      SET n_idcliente = ${n_idcliente}, c_codigo = '${c_codigo}', c_direccion = '${c_direccion}', c_nombre_responsable = '${c_nombre_responsable}', n_id_usermodi = 1, d_fechamodi = now()
-                      WHERE n_idtienda = ${n_idtienda}
+                      SET n_idgen_cliente = ${n_idgen_cliente}, c_codigo = '${c_codigo}', c_direccion = '${c_direccion}', c_nombre_responsable = '${c_nombre_responsable}', n_id_usermodi = 1, d_fechamodi = now()
+                      WHERE n_idgen_tienda = ${n_idgen_tienda}
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -78,12 +80,12 @@ const actualizarTienda = (request, response)=>{
 }
 
 const eliminarTienda = (request, response)=>{
-    let n_idtienda = request.body.n_idtienda;
+    let n_idgen_tienda = request.body.n_idgen_tienda;
     var obj = valida.validaToken(request)
     if (obj.estado){
         let cadena = `UPDATE ${nombreTabla} 
                     SET n_borrado = 1,  n_id_usermodi = 1, d_fechamodi = now()
-                    WHERE n_idtienda = ${n_idtienda}
+                    WHERE n_idgen_tienda = ${n_idgen_tienda}
         `;
         pool.query(cadena, 
         (error, results)=>{

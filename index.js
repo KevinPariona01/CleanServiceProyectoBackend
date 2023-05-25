@@ -88,6 +88,7 @@ app.post('/api/cliente/listarCliente', cliente.listarCliente)
 app.post('/api/cliente/agregarCliente', cliente.agregarCliente)
 app.post('/api/cliente/actualizarCliente', cliente.actualizarCliente)
 app.post('/api/cliente/eliminarCliente', cliente.eliminarCliente)
+app.post('/api/cliente/clienteXCodigo', cliente.clienteXCodigo)
 
 /****TIENDA****/
 app.post('/api/tienda/listarTienda', tienda.listarTienda)

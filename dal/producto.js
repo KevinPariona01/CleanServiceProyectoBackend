@@ -3,13 +3,13 @@ const valida = require('../common/validatoken');
 let pool = cnx.pool;
 
 //NOMBRE DE LA TABLA
-const nombreTabla = 'producto';
+const nombreTabla = 'gen_producto';
 
 const listarProducto = (request, response)=>{
     var obj = valida.validaToken(request)
     if (obj.estado){
 
-        let cadena = `SELECT n_idproducto, c_codigo, c_descripcion, n_borrado FROM ${nombreTabla}
+        let cadena = `SELECT n_idgen_producto, c_codigo, c_descripcion, n_borrado FROM ${nombreTabla}
                       WHERE n_borrado = 0
         `;
         pool.query(cadena, 
@@ -56,14 +56,14 @@ const agregarProducto = (request, response)=>{
 }
 
 const actualizarProducto = (request, response)=>{
-    let n_idproducto = request.body.n_idproducto;
+    let n_idgen_producto = request.body.n_idgen_producto;
     let c_codigo = request.body.c_codigo;
     let c_descripcion = request.body.c_descripcion
     var obj = valida.validaToken(request)
     if (obj.estado){
         let cadena = `UPDATE ${nombreTabla} 
                     SET c_codigo = '${c_codigo}', c_descripcion = '${c_descripcion}',  n_id_usermodi = 1, d_fechamodi = now()
-                    WHERE n_idproducto = ${n_idproducto}
+                    WHERE n_idgen_producto = ${n_idgen_producto}
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -81,12 +81,12 @@ const actualizarProducto = (request, response)=>{
 }
 
 const eliminarProducto = (request, response)=>{
-    let n_idproducto = request.body.n_idproducto;
+    let n_idgen_producto = request.body.n_idgen_producto;
     var obj = valida.validaToken(request)
     if (obj.estado){
         let cadena = `UPDATE ${nombreTabla} 
                     SET n_borrado = 1,  n_id_usermodi = 1, d_fechamodi = now()
-                    WHERE n_idproducto = ${n_idproducto}
+                    WHERE n_idgen_producto = ${n_idgen_producto}
         `;
         pool.query(cadena, 
         (error, results)=>{

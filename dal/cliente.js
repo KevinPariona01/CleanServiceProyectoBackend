@@ -3,12 +3,12 @@ const valida = require('../common/validatoken');
 let pool = cnx.pool;
 
 //NOMBRE DE LA TABLA
-const nombreTabla = 'cliente';
+const nombreTabla = 'gen_cliente';
 
 const listarCliente = (request, response)=>{
     var obj = valida.validaToken(request)
     if (obj.estado){
-        let cadena = `SELECT n_idcliente, c_codigo, c_razon_social, c_direccion, n_borrado FROM ${nombreTabla}
+        let cadena = `SELECT n_idgen_cliente, c_codigo, c_razon_social, c_direccion, n_borrado FROM ${nombreTabla}
                     WHERE n_borrado = 0
         `;
         pool.query(cadena, 
@@ -50,7 +50,7 @@ const agregarCliente = (request, response)=>{
 }
 
 const actualizarCliente = (request, response)=>{
-    let n_idcliente = request.body.n_idcliente;
+    let n_idgen_cliente = request.body.n_idgen_cliente;
     let c_codigo = request.body.c_codigo;
     let c_razon_social = request.body.c_razon_social
     let c_direccion = request.body.c_direccion
@@ -58,7 +58,7 @@ const actualizarCliente = (request, response)=>{
     if (obj.estado){
         let cadena = `UPDATE ${nombreTabla} 
                     SET c_codigo = '${c_codigo}', c_razon_social = '${c_razon_social}', c_direccion = '${c_direccion}', n_id_usermodi = 1, d_fechamodi = now()
-                    WHERE n_idcliente = ${n_idcliente}
+                    WHERE n_idgen_cliente = ${n_idgen_cliente}
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -76,12 +76,34 @@ const actualizarCliente = (request, response)=>{
 }
 
 const eliminarCliente = (request, response)=>{
-    let n_idcliente = request.body.n_idcliente;
+    let n_idgen_cliente = request.body.n_idgen_cliente;
     var obj = valida.validaToken(request)
     if (obj.estado){
         let cadena = `UPDATE ${nombreTabla} 
                     SET n_borrado = 1,  n_id_usermodi = 1, d_fechamodi = now()
-                    WHERE n_idcliente = ${n_idcliente}
+                    WHERE n_idgen_cliente = ${n_idgen_cliente}
+        `;
+        pool.query(cadena, 
+        (error, results)=>{
+            if (error) {
+                console.log(error);
+                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
+            } else {
+                response.status(200).json({ estado: true, mensaje: "", data: results.rows  })
+            }
+        });
+    }else{
+        response.status(200).json(obj)
+    }
+}
+
+const clienteXCodigo = (request, response)=>{
+    let c_codigo = request.body.c_codigo;
+    var obj = valida.validaToken(request)
+    if (obj.estado){
+        let cadena = `SELECT n_idgen_cliente, c_codigo, c_razon_social FROM gen_cliente 
+                      WHERE TRANSLATE(LOWER(c_codigo),'áéíóúü', 'aeiouu') LIKE  TRANSLATE(LOWER('%${c_codigo}%'),'áéíóúü', 'aeiouu') AND
+                      n_borrado = 0
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -102,5 +124,6 @@ module.exports = {
     listarCliente,
     agregarCliente,
     actualizarCliente,
-    eliminarCliente
+    eliminarCliente,
+    clienteXCodigo
 }
