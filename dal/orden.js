@@ -6,10 +6,11 @@ let pool = cnx.pool;
 const nombreTabla = 'gen_orden';
 
 const listarOrden = (request, response)=>{
+    let n_idgen_periodo = request.body.n_idgen_periodo;
     var obj = valida.validaToken(request)
     if (obj.estado){
         let cadena = `SELECT n_idgen_orden, n_idgen_periodo, n_idgen_tienda, c_estado, c_descripcion, n_borrado FROM ${nombreTabla}
-                      WHERE n_borrado = 0
+                      WHERE n_borrado = 0 and (n_idgen_periodo = ${n_idgen_periodo} or 0 = ${n_idgen_periodo} )
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -28,6 +29,7 @@ const listarOrden = (request, response)=>{
 
 const agregarOrden = async (request, response)=>{
     let periodos = request.body.periodos;
+    let n_idgen_periodo = request.body.n_idgen_periodo;
     const estado = (periodos[0].ESTADO!=null || periodos[0].ESTADO!=undefined)?true:false;
     const descripcion = (periodos[0].DESCRIPCION!=null || periodos[0].DESCRIPCION!=undefined)?true:false;
     //ERRORES
@@ -67,14 +69,12 @@ const agregarOrden = async (request, response)=>{
                         }
                     });
                 });
-                if(errrorSelect.length!=0){
+                if(errrorSelect.length!=0){//SI HAY ERROR SALE DEL FOR
                     console.log("ERROR");
                     break;
                 }
-                filaS++;
+                filaS++;//ITERACION PARA SABER QUE FILA
             }
-
-            console.log("LOS PERIODOS: ", periodos);
 
             //SI SALE ERROR YA NO CONTINUA
             if(errrorSelect.length!=0){
@@ -83,19 +83,20 @@ const agregarOrden = async (request, response)=>{
                 return;
             }
 
+            //VERIFICA SI HAY VACIOS
             if(resultNulos.length!=0){
                 console.log("ERROR FUERA");
-                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null, error: resultNulos })
+                response.status(200).json({ estado: false, mensaje: "", data: null, error: resultNulos })
                 return;
             }
 
+            //INICIO DE LA INSERCION
             const client = await pool.connect();//CONECTO AL CLIENTE
             try {
                     await client.query('BEGIN'); // INICIA LA TRANSANCCION
                     for (let p of periodos) {
                             let cadena = `INSERT INTO ${nombreTabla}(c_estado, c_descripcion, n_idgen_tienda, n_idgen_periodo, n_borrado, n_id_usercrea, d_fechacrea)
-                                          VALUES('${p.ESTADO}', '${p.DESCRIPCION}', ${p.id_tienda}, 1, 0, 1, now())
-                            `;
+                                          VALUES('${p.ESTADO}', '${p.DESCRIPCION}', ${p.id_tienda}, ${n_idgen_periodo}, 0, 1, now())`;
                             await client.query(cadena);
                             filaI++;
                     } 
@@ -107,6 +108,7 @@ const agregarOrden = async (request, response)=>{
                     }
                     errores.push(errorObject);
                 }
+
             if(errores.length!=0){
                 console.log('ROLLBACK');
                 await client.query('ROLLBACK'); // Realiza rollback en caso de error
@@ -116,9 +118,9 @@ const agregarOrden = async (request, response)=>{
             }
 
             if(errores.length!=0){
-            response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null, error: errores })
+                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null, error: errores })
             }else{
-            response.status(200).json({ estado: true, mensaje: "", data: null, error: errores })
+                response.status(200).json({ estado: true, mensaje: "", data: null, error: errores })
             }
             
 

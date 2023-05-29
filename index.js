@@ -103,6 +103,7 @@ app.post('/api/periodo/agregarPeriodo', periodo.agregarPeriodo)
 app.post('/api/periodo/actualizarPeriodo', periodo.actualizarPeriodo)
 app.post('/api/periodo/eliminarPeriodo', periodo.eliminarPeriodo)
 app.post('/api/periodo/estadoPeriodo', periodo.estadoPeriodo)
+app.post('/api/periodo/listarPeriodoActivos', periodo.listarPeriodoActivos)
 
 /****ORDEN****/
 app.post('/api/orden/listarOrden', orden.listarOrden)

@@ -122,13 +122,35 @@ const estadoPeriodo = (request, response)=>{
     }else{
         response.status(200).json(obj)
     }
-
 }
+
+const listarPeriodoActivos = (request, response)=>{
+    var obj = valida.validaToken(request)
+    if (obj.estado){
+        let cadena = `SELECT n_idgen_periodo, c_mes, c_anio, c_descripcion, b_activo, n_borrado FROM ${nombreTabla}
+                      WHERE n_borrado = 0 AND b_activo = true
+        `;
+        pool.query(cadena, 
+        (error, results)=>{
+            if (error) {
+                console.log(error);
+                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
+            } else {
+                response.status(200).json({ estado: true, mensaje: "", data: results.rows  })
+            }
+        });
+    }   
+    else{
+        response.status(200).json(obj)
+    }
+}
+
 
 module.exports = {
     listarPeriodo,
     agregarPeriodo,
     actualizarPeriodo,
     eliminarPeriodo,
-    estadoPeriodo
+    estadoPeriodo,
+    listarPeriodoActivos
 }
