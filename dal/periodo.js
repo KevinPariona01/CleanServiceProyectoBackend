@@ -103,11 +103,12 @@ const eliminarPeriodo = (request, response)=>{
 const estadoPeriodo = (request, response)=>{
     let n_idgen_periodo = request.body.n_idgen_periodo;
     let b_activo = request.body.b_activo;
+    console.log(request.body);
     var obj = valida.validaToken(request)
     if (obj.estado){
         let cadena = `UPDATE ${nombreTabla} 
-                    SET b_activo = ${b_activo},  n_id_usermodi = 1, d_fechamodi = now()
-                    WHERE n_idgen_periodo = ${n_idgen_periodo}
+                        SET b_activo = ${b_activo},  n_id_usermodi = 1, d_fechamodi = now()
+                        WHERE n_idgen_periodo = ${n_idgen_periodo}
         `;
         pool.query(cadena, 
         (error, results)=>{

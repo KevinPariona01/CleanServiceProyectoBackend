@@ -27,6 +27,7 @@ const producto = require('./dal/producto')//PRODUCTO
 const cliente = require('./dal/cliente')//CLIENTE
 const tienda = require('./dal/tienda')//CLIENTE
 const periodo = require('./dal/periodo')//PERIODO
+const orden = require('./dal/orden')//ORDEN
 const dbMovil = require('./dal/movil')//MOVIL
 
 
@@ -102,6 +103,10 @@ app.post('/api/periodo/agregarPeriodo', periodo.agregarPeriodo)
 app.post('/api/periodo/actualizarPeriodo', periodo.actualizarPeriodo)
 app.post('/api/periodo/eliminarPeriodo', periodo.eliminarPeriodo)
 app.post('/api/periodo/estadoPeriodo', periodo.estadoPeriodo)
+
+/****ORDEN****/
+app.post('/api/orden/listarOrden', orden.listarOrden)
+app.post('/api/orden/agregarOrden', orden.agregarOrden)
 
 
 

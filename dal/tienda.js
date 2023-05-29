@@ -35,7 +35,7 @@ const agregarTienda = (request, response)=>{
     let c_nombre_responsable = request.body.c_nombre_responsable
     var obj = valida.validaToken(request)
     if (obj.estado){
-        let cadena = `INSERT INTO ${nombreTabla}(n_idgen_cliente, c_direccion, c_codigo, c_nombre_responsable, n_borrado, n_id_usercrea, d_fechacrea)
+        let cadena = `INSERT INTO ${nombreTabla}(n_idgen_cliente, c_codigo, c_direccion, c_nombre_responsable, n_borrado, n_id_usercrea, d_fechacrea)
                     VALUES(${n_idgen_cliente}, '${c_codigo}', '${c_direccion}', '${c_nombre_responsable}', 0, 1, now())
         `;
         pool.query(cadena, 
