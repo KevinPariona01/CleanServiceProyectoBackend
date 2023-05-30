@@ -30,13 +30,13 @@ const listarOrden = (request, response)=>{
 const agregarOrden = async (request, response)=>{
     let periodos = request.body.periodos;
     let n_idgen_periodo = request.body.n_idgen_periodo;
-    const estado = (periodos[0].ESTADO!=null || periodos[0].ESTADO!=undefined)?true:false;
-    const descripcion = (periodos[0].DESCRIPCION!=null || periodos[0].DESCRIPCION!=undefined)?true:false;
+    let usuario = request.body.usuario;
+    const estado = Object.keys(periodos[0]).includes("ESTADO") ?true:false;
+    const descripcion = Object.keys(periodos[0]).includes("DESCRIPCION")?true:false;
+    const tienda = Object.keys(periodos[0]).includes("TIENDA")?true:false;
     //ERRORES
-    let errores = [];
     let errorObject;
     let resultNuloObject;
-    let filaI = 2;
     let filaS = 2;
     errrorSelect = [];
     resultNulos = [];
@@ -50,7 +50,7 @@ const agregarOrden = async (request, response)=>{
                     pool.query(busqueda, (error, results)=>{
                         if(error){//MANEJO DE ERRORES DE QUERY
                             errorObject = {
-                                error:error.toString(),
+                                mensaje:error.toString(),
                                 fila: 'ERROR DB'
                             }
                             errrorSelect.push(errorObject);
@@ -58,7 +58,7 @@ const agregarOrden = async (request, response)=>{
                         }else{//MANERO DE CODIGOS QUE NO SE ENCUENTRAN
                             if(results.rows.length==0){
                                 resultNuloObject = {
-                                    error:'No se encontro código: '+ p.TIENDA,
+                                    mensaje:'No se encontro código: '+ p.TIENDA,
                                     fila: filaS
                                 }
                                 resultNulos.push(resultNuloObject);
@@ -78,20 +78,44 @@ const agregarOrden = async (request, response)=>{
 
             //SI SALE ERROR YA NO CONTINUA
             if(errrorSelect.length!=0){
-                console.log("ERROR FUERA");
-                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null, error: errrorSelect })
+                response.status(200).json({ estado: false, mensaje: "DB: error!.", data: null, error: errrorSelect })
                 return;
             }
 
             //VERIFICA SI HAY VACIOS
             if(resultNulos.length!=0){
-                console.log("ERROR FUERA");
                 response.status(200).json({ estado: false, mensaje: "", data: null, error: resultNulos })
                 return;
             }
 
             //INICIO DE LA INSERCION
-            const client = await pool.connect();//CONECTO AL CLIENTE
+            const arregloCadenas = periodos.map(objeto => {
+                return `('${objeto.ESTADO}', '${objeto.DESCRIPCION}', '${objeto.TIENDA}', ${objeto.id_tienda})::objeto_type_orden_excel`;
+            });
+              
+            let cadena = `SELECT insertar_datos_orden_excel(ARRAY[${arregloCadenas}], ${n_idgen_periodo}, ${usuario})`;
+
+            pool.query(cadena, (error, results)=>{
+                if(error){
+                    errorObject = {
+                        mensaje:error.toString(),
+                        fila: 'ERROR DB'
+                    }
+                    errrorSelect.push(errorObject);
+                    response.status(200).json({ estado: false, mensaje: "DB: error!.", data: null, error: errrorSelect })
+                }else{
+                    let error_band =  Object.keys(results.rows[0].insertar_datos_orden_excel[0]).includes("fila")
+                    if(error_band){
+                        response.status(200).json({estado: true, mensaje: "", data: results.rows[0].insertar_datos_orden_excel, error_func : true});
+                    }else{
+                        response.status(200).json({estado: true, mensaje: "", data: results.rows});
+                    }
+                    
+                }
+            });
+
+            //ANTERIOR
+            /* const client = await pool.connect();//CONECTO AL CLIENTE
             try {
                     await client.query('BEGIN'); // INICIA LA TRANSANCCION
                     for (let p of periodos) {
@@ -121,7 +145,7 @@ const agregarOrden = async (request, response)=>{
                 response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null, error: errores })
             }else{
                 response.status(200).json({ estado: true, mensaje: "", data: null, error: errores })
-            }
+            } */
             
 
         }else{
