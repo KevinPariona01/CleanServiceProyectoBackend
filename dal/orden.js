@@ -46,7 +46,7 @@ const agregarOrden = async (request, response)=>{
             //BUSQUEDA DE ID
             for(let p of periodos){
                 await new Promise((resolve)=>{
-                    let busqueda = `SELECT n_idgen_tienda FROM gen_tienda WHERE c_codigo = '${p.TIENDA}'`;
+                    let busqueda = `SELECT n_idgen_tienda FROM gen_tienda WHERE c_codigo = '${p.TIENDA}' and n_borrado = 0`;
                     pool.query(busqueda, (error, results)=>{
                         if(error){//MANEJO DE ERRORES DE QUERY
                             errorObject = {
