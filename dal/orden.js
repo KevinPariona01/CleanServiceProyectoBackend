@@ -9,8 +9,13 @@ const listarOrden = (request, response)=>{
     let n_idgen_periodo = request.body.n_idgen_periodo;
     var obj = valida.validaToken(request)
     if (obj.estado){
-        let cadena = `SELECT n_idgen_orden, n_idgen_periodo, n_idgen_tienda, c_estado, c_descripcion, n_borrado FROM ${nombreTabla}
-                      WHERE n_borrado = 0 and (n_idgen_periodo = ${n_idgen_periodo} or 0 = ${n_idgen_periodo} )
+        let cadena = `SELECT go.n_idgen_orden, go.c_estado, go.c_descripcion, go.n_borrado, 
+                      gt.c_codigo, gt.c_direccion, 
+                      gp.c_mes, gp.c_descripcion as p_c_descripcion
+                      FROM ${nombreTabla} go
+                      INNER JOIN gen_tienda gt on gt.n_idgen_tienda = go.n_idgen_tienda AND gt.n_borrado = 0
+                      INNER JOIN gen_periodo gp on gp.n_idgen_periodo = go.n_idgen_periodo AND gp.n_borrado = 0
+                      WHERE go.n_borrado = 0 and (go.n_idgen_periodo = ${n_idgen_periodo} or 0 = ${n_idgen_periodo} )
         `;
         pool.query(cadena, 
         (error, results)=>{
@@ -42,7 +47,7 @@ const agregarOrden = async (request, response)=>{
     resultNulos = [];
     var obj = valida.validaToken(request)
     if (obj.estado){
-        if(estado && descripcion){
+        if(estado && descripcion && tienda){
             //BUSQUEDA DE ID
             for(let p of periodos){
                 await new Promise((resolve)=>{
@@ -55,7 +60,7 @@ const agregarOrden = async (request, response)=>{
                             }
                             errrorSelect.push(errorObject);
                             resolve();
-                        }else{//MANERO DE CODIGOS QUE NO SE ENCUENTRAN
+                        }else{//MANEJO DE CODIGOS QUE NO SE ENCUENTRAN
                             if(results.rows.length==0){
                                 resultNuloObject = {
                                     mensaje:'No se encontro código: '+ p.TIENDA,
@@ -113,41 +118,6 @@ const agregarOrden = async (request, response)=>{
                     
                 }
             });
-
-            //ANTERIOR
-            /* const client = await pool.connect();//CONECTO AL CLIENTE
-            try {
-                    await client.query('BEGIN'); // INICIA LA TRANSANCCION
-                    for (let p of periodos) {
-                            let cadena = `INSERT INTO ${nombreTabla}(c_estado, c_descripcion, n_idgen_tienda, n_idgen_periodo, n_borrado, n_id_usercrea, d_fechacrea)
-                                          VALUES('${p.ESTADO}', '${p.DESCRIPCION}', ${p.id_tienda}, ${n_idgen_periodo}, 0, 1, now())`;
-                            await client.query(cadena);
-                            filaI++;
-                    } 
-                }catch(error){
-                    console.error('Error en la transacción:', error.toString());
-                    errorObject = {
-                        error:error.toString(),
-                        fila: filaI
-                    }
-                    errores.push(errorObject);
-                }
-
-            if(errores.length!=0){
-                console.log('ROLLBACK');
-                await client.query('ROLLBACK'); // Realiza rollback en caso de error
-            }else{
-                console.log('COMMIT');
-                await client.query('COMMIT'); // Realiza rollback en caso de error
-            }
-
-            if(errores.length!=0){
-                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null, error: errores })
-            }else{
-                response.status(200).json({ estado: true, mensaje: "", data: null, error: errores })
-            } */
-            
-
         }else{
             response.status(200).json({estado: false, mensaje: "Nombres de la columnas mal puestas", data: null});
         }
