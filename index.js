@@ -29,7 +29,8 @@ const tienda = require('./dal/tienda')//CLIENTE
 const periodo = require('./dal/periodo')//PERIODO
 const orden = require('./dal/orden')//ORDEN
 const equipo = require('./dal/equipo')//EQUIPO
-const metodologia = require('./dal/metodologia')//EQUIPO
+const metodologia = require('./dal/metodologia')//METODOLOGIA
+const recomendacion = require('./dal/recomendacion')//RECOMENDACION
 const dbMovil = require('./dal/movil')//MOVIL
 
 
@@ -122,6 +123,12 @@ app.post('/api/metodologia/listarMetodologia', metodologia.listarMetodologia)
 app.post('/api/metodologia/agregarMetodologia', metodologia.agregarMetodologia)
 app.post('/api/metodologia/actualizarMetodologia', metodologia.actualizarMetodologia)
 app.post('/api/metodologia/eliminarMetodologia', metodologia.eliminarMetodologia)
+
+/****RECOMENDACION****/
+app.post('/api/recomendacion/listarRecomendacion', recomendacion.listarRecomendacion)
+app.post('/api/recomendacion/agregarRecomendacion', recomendacion.agregarRecomendacion)
+app.post('/api/recomendacion/actualizarRecomendacion', recomendacion.actualizarRecomendacion)
+app.post('/api/recomendacion/eliminarRecomendacion', recomendacion.eliminarRecomendacion)
 
 
 
