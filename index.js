@@ -31,6 +31,7 @@ const orden = require('./dal/orden')//ORDEN
 const equipo = require('./dal/equipo')//EQUIPO
 const metodologia = require('./dal/metodologia')//METODOLOGIA
 const recomendacion = require('./dal/recomendacion')//RECOMENDACION
+const observacion = require('./dal/observacion')//OBSERVACION
 const dbMovil = require('./dal/movil')//MOVIL
 
 
@@ -117,6 +118,7 @@ app.post('/api/equipo/listarEquipo', equipo.listarEquipo)
 app.post('/api/equipo/agregarEquipo', equipo.agregarEquipo)
 app.post('/api/equipo/actualizarEquipo', equipo.actualizarEquipo)
 app.post('/api/equipo/eliminarEquipo', equipo.eliminarEquipo)
+app.post('/api/equipo/estadoEquipo', equipo.estadoEquipo)
 
 /****METODOLOGIA****/
 app.post('/api/metodologia/listarMetodologia', metodologia.listarMetodologia)
@@ -129,6 +131,12 @@ app.post('/api/recomendacion/listarRecomendacion', recomendacion.listarRecomenda
 app.post('/api/recomendacion/agregarRecomendacion', recomendacion.agregarRecomendacion)
 app.post('/api/recomendacion/actualizarRecomendacion', recomendacion.actualizarRecomendacion)
 app.post('/api/recomendacion/eliminarRecomendacion', recomendacion.eliminarRecomendacion)
+
+/****OBSERVACION****/
+app.post('/api/observacion/listarObservacion', observacion.listarObservacion)
+app.post('/api/observacion/agregarObservacion', observacion.agregarObservacion)
+app.post('/api/observacion/actualizarObservacion', observacion.actualizarObservacion)
+app.post('/api/observacion/eliminarObservacion', observacion.eliminarObservacion)
 
 
 
