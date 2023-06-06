@@ -32,7 +32,8 @@ const equipo = require('./dal/equipo')//EQUIPO
 const metodologia = require('./dal/metodologia')//METODOLOGIA
 const recomendacion = require('./dal/recomendacion')//RECOMENDACION
 const observacion = require('./dal/observacion')//OBSERVACION
-const infestacion = require('./dal/infestacion')//OBSERVACION
+const infestacion = require('./dal/infestacion')//INFESTACION
+const personal = require('./dal/personal')//PERSONAL
 const dbMovil = require('./dal/movil')//MOVIL
 
 
@@ -144,6 +145,12 @@ app.post('/api/infestacion/listarInfestacion', infestacion.listarInfestacion)
 app.post('/api/infestacion/agregarInfestacion', infestacion.agregarInfestacion)
 app.post('/api/infestacion/actualizarInfestacion', infestacion.actualizarInfestacion)
 app.post('/api/infestacion/eliminarInfestacion', infestacion.eliminarInfestacion)
+
+/****PERSONAL****/
+app.post('/api/personal/listarPersonal', personal.listarPersonal)
+app.post('/api/personal/agregarPersonal', personal.agregarPersonal)
+app.post('/api/personal/actualizarPersonal', personal.actualizarPersonal)
+app.post('/api/personal/eliminarPersonal', personal.eliminarPersonal)
 
 
 
