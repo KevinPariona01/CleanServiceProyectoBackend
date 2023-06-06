@@ -36,6 +36,7 @@ const infestacion = require('./dal/infestacion')//INFESTACION
 const personal = require('./dal/personal')//PERSONAL
 const especie = require('./dal/especie')//ESPECIE
 const dosificacion = require('./dal/dosificacion')//DOSIFICACION
+const incidente = require('./dal/incidente')//INCIDENTE
 const dbMovil = require('./dal/movil')//MOVIL
 
 
@@ -165,6 +166,12 @@ app.post('/api/dosificacion/listarDosificacion', dosificacion.listarDosificacion
 app.post('/api/dosificacion/agregarDosificacion', dosificacion.agregarDosificacion)
 app.post('/api/dosificacion/actualizarDosificacion', dosificacion.actualizarDosificacion)
 app.post('/api/dosificacion/eliminarDosificacion', dosificacion.eliminarDosificacion)
+
+/****INCIDENTE****/
+app.post('/api/incidente/listarIncidente', incidente.listarIncidente)
+app.post('/api/incidente/agregarIncidente', incidente.agregarIncidente)
+app.post('/api/incidente/actualizarIncidente', incidente.actualizarIncidente)
+app.post('/api/incidente/eliminarIncidente', incidente.eliminarIncidente)
 
 
 
