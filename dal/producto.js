@@ -103,9 +103,33 @@ const eliminarProducto = (request, response)=>{
 
 }
 
+const validarNoRepetir = (request, response)=>{
+    let c_codigo = request.body.c_codigo;
+    let n_idgen_producto = request.body.n_idgen_producto;
+    var obj = valida.validaToken(request)
+    if (obj.estado){
+        let cadena = `SELECT c_codigo FROM ${nombreTabla}
+                      WHERE c_codigo = '${c_codigo}' AND n_idgen_producto<>${n_idgen_producto} AND n_borrado = 0
+        `;
+        pool.query(cadena, 
+        (error, results)=>{
+            if (error) {
+                console.log(error);
+                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
+            } else {
+                response.status(200).json({ estado: true, mensaje: "", data: results.rows  })
+            }
+        });
+    }else{
+        response.status(200).json(obj)
+    }
+
+}
+
 module.exports = {
     listarProducto,
     agregarProducto,
     actualizarProducto,
-    eliminarProducto
+    eliminarProducto,
+    validarNoRepetir
 }

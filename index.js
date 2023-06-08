@@ -92,6 +92,7 @@ app.post('/api/producto/listarProducto', producto.listarProducto)
 app.post('/api/producto/agregarProducto', producto.agregarProducto)
 app.post('/api/producto/actualizarProducto', producto.actualizarProducto)
 app.post('/api/producto/eliminarProducto', producto.eliminarProducto)
+app.post('/api/producto/validarNoRepetir', producto.validarNoRepetir)
 
 /****CLIENTE****/
 app.post('/api/cliente/listarCliente', cliente.listarCliente)
@@ -99,12 +100,14 @@ app.post('/api/cliente/agregarCliente', cliente.agregarCliente)
 app.post('/api/cliente/actualizarCliente', cliente.actualizarCliente)
 app.post('/api/cliente/eliminarCliente', cliente.eliminarCliente)
 app.post('/api/cliente/clienteXCodigo', cliente.clienteXCodigo)
+app.post('/api/cliente/validarNoRepetir', cliente.validarNoRepetir)
 
 /****TIENDA****/
 app.post('/api/tienda/listarTienda', tienda.listarTienda)
 app.post('/api/tienda/agregarTienda', tienda.agregarTienda)
 app.post('/api/tienda/actualizarTienda', tienda.actualizarTienda)
 app.post('/api/tienda/eliminarTienda', tienda.eliminarTienda)
+app.post('/api/tienda/validarNoRepetir', tienda.validarNoRepetir)
 
 /****PERIODO****/
 app.post('/api/periodo/listarPeriodo', periodo.listarPeriodo)
