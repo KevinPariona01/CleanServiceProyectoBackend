@@ -1,9 +1,12 @@
 const cnx = require('../common/appsettings');
 const valida = require('../common/validatoken');
+const constantes_estado = require('../common/constantes');
 let pool = cnx.pool;
 
 //NOMBRE DE LA TABLA
 const nombreTabla = 'gen_orden';
+
+
 
 const listarOrden = (request, response)=>{
     let n_idgen_periodo = request.body.n_idgen_periodo;
@@ -36,7 +39,7 @@ const agregarOrden = async (request, response)=>{
     let periodos = request.body.periodos;
     let n_idgen_periodo = request.body.n_idgen_periodo;
     let usuario = request.body.usuario;
-    const estado = Object.keys(periodos[0]).includes("ESTADO") ?true:false;
+    const estado = constantes_estado.ESTADO_CARGADO;
     const descripcion = Object.keys(periodos[0]).includes("DESCRIPCION")?true:false;
     const tienda = Object.keys(periodos[0]).includes("TIENDA")?true:false;
     //ERRORES
@@ -47,11 +50,12 @@ const agregarOrden = async (request, response)=>{
     resultNulos = [];
     var obj = valida.validaToken(request)
     if (obj.estado){
-        if(estado && descripcion && tienda){
+        if(descripcion && tienda){
             //BUSQUEDA DE ID
             for(let p of periodos){
                 await new Promise((resolve)=>{
                     let busqueda = `SELECT n_idgen_tienda FROM gen_tienda WHERE c_codigo = '${p.TIENDA}' and n_borrado = 0`;
+
                     pool.query(busqueda, (error, results)=>{
                         if(error){//MANEJO DE ERRORES DE QUERY
                             errorObject = {
@@ -74,10 +78,12 @@ const agregarOrden = async (request, response)=>{
                         }
                     });
                 });
+
                 if(errrorSelect.length!=0){//SI HAY ERROR SALE DEL FOR
                     console.log("ERROR");
                     break;
                 }
+
                 filaS++;//ITERACION PARA SABER QUE FILA
             }
 
@@ -98,7 +104,7 @@ const agregarOrden = async (request, response)=>{
                 return `('${objeto.ESTADO}', '${objeto.DESCRIPCION}', '${objeto.TIENDA}', ${objeto.id_tienda})::objeto_type_orden_excel`;
             });
               
-            let cadena = `SELECT insertar_datos_orden_excel(ARRAY[${arregloCadenas}], ${n_idgen_periodo}, ${usuario})`;
+            let cadena = `SELECT insertar_datos_orden_excel(ARRAY[${arregloCadenas}], ${n_idgen_periodo}, ${usuario}, '${estado}' ) `;
 
             pool.query(cadena, (error, results)=>{
                 if(error){
@@ -126,9 +132,40 @@ const agregarOrden = async (request, response)=>{
     }
 }
 
+const asignarOrdenesTecnico = (request, response)=>{
+    var obj = valida.validaToken(request)
+    if (obj.estado){
+        let tecnico = request.body.tecnico;
+        let ordenes = request.body.ordenes;
+        let set_ordenes = ordenes.join(',');
+        console.log(tecnico);
+        console.log(ordenes);
+        console.log(set_ordenes);
+        let cadena = `UPDATE ${nombreTabla}
+                        SET n_idseg_userprofile = ${tecnico.n_idseg_userprofile}, c_estado = ${constantes_estado.ESTADO_ASIGNADO}
+                        WHERE n_idgen_orden IN (${set_ordenes});
+        `;
+        pool.query(cadena, 
+        (error, results)=>{
+            if (error) {
+                console.log(error);
+                
+                console.log(cadena);
+                response.status(200).json({ estado: false, mensaje: "DB: error3!.", data: null })
+            } else {
+                response.status(200).json({ estado: true, mensaje: "", data: results.rows  })
+            }
+        });
+
+    }else{
+        response.status(200).json(obj)
+    } 
+}
+
 
 
 module.exports = {
     listarOrden,
     agregarOrden,
+    asignarOrdenesTecnico
 }

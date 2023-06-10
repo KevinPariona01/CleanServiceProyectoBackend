@@ -101,7 +101,7 @@ const clienteXCodigo = (request, response)=>{
     let c_codigo = request.body.c_codigo;
     var obj = valida.validaToken(request)
     if (obj.estado){
-        let cadena = `SELECT n_idgen_cliente, c_codigo, c_razon_social FROM gen_cliente 
+        let cadena = `SELECT n_idgen_cliente, c_codigo, c_razon_social FROM ${nombreTabla}
                       WHERE TRANSLATE(LOWER(c_codigo),'áéíóúü', 'aeiouu') LIKE  TRANSLATE(LOWER('%${c_codigo}%'),'áéíóúü', 'aeiouu') AND
                       n_borrado = 0
         `;

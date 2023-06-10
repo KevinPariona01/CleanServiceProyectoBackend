@@ -37,6 +37,7 @@ const personal = require('./dal/personal')//PERSONAL
 const especie = require('./dal/especie')//ESPECIE
 const dosificacion = require('./dal/dosificacion')//DOSIFICACION
 const incidente = require('./dal/incidente')//INCIDENTE
+const tecnico = require('./dal/tecnico')//TECNICO
 const dbMovil = require('./dal/movil')//MOVIL
 
 
@@ -120,6 +121,7 @@ app.post('/api/periodo/listarPeriodoActivos', periodo.listarPeriodoActivos)
 /****ORDEN****/
 app.post('/api/orden/listarOrden', orden.listarOrden)
 app.post('/api/orden/agregarOrden', orden.agregarOrden)
+app.post('/api/orden/asignarOrdenesTecnico', orden.asignarOrdenesTecnico)
 
 /****EQUIPO****/
 app.post('/api/equipo/listarEquipo', equipo.listarEquipo)
@@ -175,6 +177,9 @@ app.post('/api/incidente/listarIncidente', incidente.listarIncidente)
 app.post('/api/incidente/agregarIncidente', incidente.agregarIncidente)
 app.post('/api/incidente/actualizarIncidente', incidente.actualizarIncidente)
 app.post('/api/incidente/eliminarIncidente', incidente.eliminarIncidente)
+
+/****TECNICO****/
+app.post('/api/tecnico/listarTecnico', tecnico.listarTecnico)
 
 
 
