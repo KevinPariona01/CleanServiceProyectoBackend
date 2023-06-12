@@ -9,13 +9,13 @@ let local = {
 
 let prod = {
   user: 'postgres',
-  host: 'solredespostgres.cluster-c2xs6vpymflg.us-east-1.rds.amazonaws.com',
-  database: 'SolRedesProd',
-  password: 'Candwi202288',
+  host: 'ec2-18-118-110-45.us-east-2.compute.amazonaws.com',
+  database: 'CleanService',
+  password: 'softwarefactory',
   port: 5432
 }
 
-const pool = new Pool(local)
+const pool = new Pool(prod)
 
 
 
