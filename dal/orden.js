@@ -42,15 +42,21 @@ const agregarOrden = async (request, response)=>{
     const estado = constantes_estado.ESTADO_CARGADO;
     const descripcion = Object.keys(periodos[0]).includes("DESCRIPCION")?true:false;
     const tienda = Object.keys(periodos[0]).includes("TIENDA")?true:false;
+    const cantidad_personal = Object.keys(periodos[0]).includes("CANTIDAD_PERSONAL")?true:false;
+    const tiempo_atencion = Object.keys(periodos[0]).includes("TIEMPO_DE_ATENCION")?true:false;
+
+    console.log("DATO: ",periodos );
+
     //ERRORES
     let errorObject;
     let resultNuloObject;
     let filaS = 2;
     errrorSelect = [];
     resultNulos = [];
+
     var obj = valida.validaToken(request)
     if (obj.estado){
-        if(descripcion && tienda){
+        if(descripcion && tienda && cantidad_personal && tiempo_atencion){
             //BUSQUEDA DE ID
             for(let p of periodos){
                 await new Promise((resolve)=>{
@@ -77,6 +83,7 @@ const agregarOrden = async (request, response)=>{
                             resolve();
                         }
                     });
+
                 });
 
                 if(errrorSelect.length!=0){//SI HAY ERROR SALE DEL FOR
@@ -101,10 +108,10 @@ const agregarOrden = async (request, response)=>{
 
             //INICIO DE LA INSERCION
             const arregloCadenas = periodos.map(objeto => {
-                return `('${objeto.ESTADO}', '${objeto.DESCRIPCION}', '${objeto.TIENDA}', ${objeto.id_tienda})::objeto_type_orden_excel`;
+                return `('${objeto.DESCRIPCION}', '${objeto.TIENDA}', ${objeto.id_tienda}, '${objeto.CANTIDAD_PERSONAL}', '${objeto.TIEMPO_DE_ATENCION}')::objeto_type_orden_excel`;
             });
               
-            let cadena = `SELECT insertar_datos_orden_excel(ARRAY[${arregloCadenas}], ${n_idgen_periodo}, ${usuario}, '${estado}' ) `;
+            let cadena = `SELECT fn_insertar_datos_orden_excel(ARRAY[${arregloCadenas}], ${n_idgen_periodo}, ${usuario}, '${estado}' ) `;
 
             pool.query(cadena, (error, results)=>{
                 if(error){
@@ -115,9 +122,9 @@ const agregarOrden = async (request, response)=>{
                     errrorSelect.push(errorObject);
                     response.status(200).json({ estado: false, mensaje: "DB: error!.", data: null, error: errrorSelect })
                 }else{
-                    let error_band =  Object.keys(results.rows[0].insertar_datos_orden_excel[0]).includes("fila")
+                    let error_band =  Object.keys(results.rows[0].fn_insertar_datos_orden_excel[0]).includes("fila")
                     if(error_band){
-                        response.status(200).json({estado: true, mensaje: "", data: results.rows[0].insertar_datos_orden_excel, error_func : true});
+                        response.status(200).json({estado: true, mensaje: "", data: results.rows[0].fn_insertar_datos_orden_excel, error_func : true});
                     }else{
                         response.status(200).json({estado: true, mensaje: "", data: results.rows});
                     }
